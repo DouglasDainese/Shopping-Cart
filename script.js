@@ -1,6 +1,8 @@
 // Esse tipo de comentário que estão antes de todas as funções são chamados de JSdoc,
 // experimente passar o mouse sobre o nome das funções e verá que elas possuem descrições! 
 
+// const { fetchItem } = require("./helpers/fetchItem");
+
 // const { fetchProducts } = require('./helpers/fetchProducts');
 
 // Fique a vontade para modificar o código já escrito e criar suas próprias funções!
@@ -70,8 +72,25 @@ const createCartItemElement = ({ id, title, price }) => {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `ID: ${id} | TITLE: ${title} | PRICE: $${price}`;
-  li.addEventListener('click', cartItemClickListener);
+  // li.addEventListener('click', cartItemClickListener);
   return li;
+};
+
+const addItemInCart = async (event) => {
+  const produtoEscolhido = event.target;
+  const idProdutoEscolhido = produtoEscolhido.parentNode.firstElementChild.innerText;
+  const inforProduto = await fetchItem(idProdutoEscolhido);
+  const { id, title, price } = inforProduto;
+  const produtoAdd = createCartItemElement({ id, title, price });
+  const elementPai = document.querySelector('.cart__items');
+  elementPai.appendChild(produtoAdd);
+};
+
+const addEscutadorDeEventos = () => {
+  const produtos = document.querySelectorAll('.item__add');
+  produtos.forEach((element) => {
+    element.addEventListener('click', addItemInCart);
+  });
 };
 
 const addElementsInPag = async (valor) => {
@@ -87,8 +106,9 @@ const addElementsInPag = async (valor) => {
       const section = createProductItemElement(produto);
       sectionParent.appendChild(section);
     });
+    addEscutadorDeEventos();
 };
 
 window.onload = async () => {
-addElementsInPag('computador');
+await addElementsInPag('computador');
 };
