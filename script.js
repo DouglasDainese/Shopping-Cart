@@ -74,13 +74,21 @@ const createCartItemElement = ({ id, title, price }) => {
   return li;
 };
 
-// const addElementsInPag = async (valor) => {
-//   const produtos = await fetchProducts(valor);
-//   console.log(produtos);
-// };
-// addElementsInPag('computador');
+const addElementsInPag = async (valor) => {
+  const sectionParent = document.getElementsByClassName('items')[0];
+  const produtos = await fetchProducts(valor);
+  produtos.results
+    .forEach((element) => {
+      const produto = {
+       id: element.id, 
+       title: element.title, 
+       thumbnail: element.thumbnail,
+      };
+      const section = createProductItemElement(produto);
+      sectionParent.appendChild(section);
+    });
+};
 
-// window.onload = async () => {
-//  const teste = await fetchProducts('computador');
-//  console.log(teste);
-// };
+window.onload = async () => {
+addElementsInPag('computador');
+};
