@@ -76,6 +76,16 @@ const createCartItemElement = ({ id, title, price }) => {
   return li;
 };
 
+const removeItemInCart = (event) => {
+  const productRemove = event.target;
+  const newProductInCart = document.querySelectorAll('.cart__item');
+  newProductInCart.forEach((element) => {
+    if (element === productRemove) {
+      element.parentElement.removeChild(productRemove);
+    }
+  });
+};
+
 const addItemInCart = async (event) => {
   const produtoEscolhido = event.target;
   const idProdutoEscolhido = produtoEscolhido.parentNode.firstElementChild.innerText;
@@ -84,6 +94,8 @@ const addItemInCart = async (event) => {
   const produtoAdd = createCartItemElement({ id, title, price });
   const elementPai = document.querySelector('.cart__items');
   elementPai.appendChild(produtoAdd);
+  const newProductInCart = document.querySelectorAll('.cart__item');
+  newProductInCart.forEach((element) => element.addEventListener('click', removeItemInCart));
 };
 
 const addEscutadorDeEventos = () => {
