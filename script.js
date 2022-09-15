@@ -65,7 +65,7 @@ const createProductItemElement = ({ id, title, thumbnail }) => {
  * @returns {string} ID do produto.
  */
  const getIdFromProductItem = (product) => product.querySelector('span.item_id').innerText;
-
+console.log(typeof getIdFromProductItem);
 /**
  * Função responsável por criar e retornar um item do carrinho.
  * @param {Object} product - Objeto do produto.
@@ -132,7 +132,6 @@ const addElementsInPag = async (valor) => {
       sectionParent.appendChild(section);
     });
     addEscutadorDeEventos();
-    console.log(getIdFromProductItem('MLB1615760527'));
 };
 
 window.onload = async () => {
