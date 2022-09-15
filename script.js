@@ -1,6 +1,8 @@
 // Esse tipo de comentário que estão antes de todas as funções são chamados de JSdoc,
 // experimente passar o mouse sobre o nome das funções e verá que elas possuem descrições! 
 
+// const saveCartItems = require("./helpers/saveCartItems");
+
 // const { fetchItem } = require("./helpers/fetchItem");
 
 // const { fetchProducts } = require('./helpers/fetchProducts');
@@ -72,8 +74,13 @@ const createCartItemElement = ({ id, title, price }) => {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `ID: ${id} | TITLE: ${title} | PRICE: $${price}`;
-  // li.addEventListener('click', cartItemClickListener);
+  // li.addEventListener('click', console.log('clickou'));
   return li;
+};
+
+const atualizaWebStorag = () => {
+  const produtosNoCarrinho = document.querySelector('.cart__items');
+  saveCartItems(produtosNoCarrinho.innerHTML);
 };
 
 const removeItemInCart = (event) => {
@@ -84,18 +91,18 @@ const removeItemInCart = (event) => {
       element.parentElement.removeChild(productRemove);
     }
   });
+  atualizaWebStorag();
 };
 
 const addItemInCart = async (event) => {
-  const produtoEscolhido = event.target;
-  const idProdutoEscolhido = produtoEscolhido.parentNode.firstElementChild.innerText;
+  const idProdutoEscolhido = event.target.parentNode.firstElementChild.innerText;
   const inforProduto = await fetchItem(idProdutoEscolhido);
-  const { id, title, price } = inforProduto;
-  const produtoAdd = createCartItemElement({ id, title, price });
-  const elementPai = document.querySelector('.cart__items');
-  elementPai.appendChild(produtoAdd);
+  const produtoAdd = createCartItemElement(inforProduto);
+  const cartElementPai = document.querySelector('.cart__items');
+  cartElementPai.appendChild(produtoAdd);
   const newProductInCart = document.querySelectorAll('.cart__item');
   newProductInCart.forEach((element) => element.addEventListener('click', removeItemInCart));
+  atualizaWebStorag();
 };
 
 const addEscutadorDeEventos = () => {
