@@ -82,14 +82,15 @@ const createCartItemElement = ({ id, title, price }) => {
   return li;
 };
 
+const produtosNoCarrinho = document.querySelector('.cart__items');
+
 const atualizaWebStorag = () => {
-  const produtosNoCarrinho = document.querySelector('.cart__items');
   saveCartItems(produtosNoCarrinho.innerHTML);
 };
 
 const removeItemInCart = (event) => {
-  const productRemove = event.target;
   const newProductInCart = document.querySelectorAll('.cart__item');
+  const productRemove = event.target;
   newProductInCart.forEach((element) => {
     if (element === productRemove) {
       element.parentElement.removeChild(productRemove);
@@ -133,6 +134,14 @@ const addElementsInPag = async (valor) => {
     });
     addEscutadorDeEventos();
 };
+
+const limparCart = document.querySelector('.empty-cart');
+limparCart.addEventListener('click', () => {
+while (produtosNoCarrinho.firstChild) {
+  produtosNoCarrinho.removeChild(produtosNoCarrinho.lastChild);
+}
+atualizaWebStorag();
+});
 
 window.onload = async () => {
 await addElementsInPag('computador');
