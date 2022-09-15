@@ -1,6 +1,8 @@
 // Esse tipo de comentário que estão antes de todas as funções são chamados de JSdoc,
 // experimente passar o mouse sobre o nome das funções e verá que elas possuem descrições! 
 
+// const getSavedCartItems = require("./helpers/getSavedCartItems");
+
 // const saveCartItems = require("./helpers/saveCartItems");
 
 // const { fetchItem } = require("./helpers/fetchItem");
@@ -8,6 +10,8 @@
 // const { fetchProducts } = require('./helpers/fetchProducts');
 
 // Fique a vontade para modificar o código já escrito e criar suas próprias funções!
+
+const cartElementPai = document.querySelector('.cart__items');
 
 /**
  * Função responsável por criar e retornar o elemento de imagem do produto.
@@ -93,16 +97,18 @@ const removeItemInCart = (event) => {
   });
   atualizaWebStorag();
 };
+const addEscutadorInCart = () => {
+const newProductInCart = document.querySelectorAll('.cart__item');
+newProductInCart.forEach((element) => element.addEventListener('click', removeItemInCart));
+atualizaWebStorag();
+};
 
 const addItemInCart = async (event) => {
   const idProdutoEscolhido = event.target.parentNode.firstElementChild.innerText;
   const inforProduto = await fetchItem(idProdutoEscolhido);
   const produtoAdd = createCartItemElement(inforProduto);
-  const cartElementPai = document.querySelector('.cart__items');
   cartElementPai.appendChild(produtoAdd);
-  const newProductInCart = document.querySelectorAll('.cart__item');
-  newProductInCart.forEach((element) => element.addEventListener('click', removeItemInCart));
-  atualizaWebStorag();
+  addEscutadorInCart();
 };
 
 const addEscutadorDeEventos = () => {
@@ -126,8 +132,12 @@ const addElementsInPag = async (valor) => {
       sectionParent.appendChild(section);
     });
     addEscutadorDeEventos();
+    console.log(getIdFromProductItem('MLB1615760527'));
 };
 
 window.onload = async () => {
 await addElementsInPag('computador');
+const itensSalvos = getSavedCartItems();
+cartElementPai.innerHTML = itensSalvos;
+addEscutadorInCart();
 };
