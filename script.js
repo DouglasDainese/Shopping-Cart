@@ -143,8 +143,14 @@ while (produtosNoCarrinho.firstChild) {
 atualizaWebStorag();
 });
 
+const removeLoading = () => {
+const divLoading = document.querySelector('.loading');
+return divLoading.remove();
+};
+
 window.onload = async () => {
 await addElementsInPag('computador');
+removeLoading();
 const itensSalvos = getSavedCartItems();
 cartElementPai.innerHTML = itensSalvos;
 addEscutadorInCart();
