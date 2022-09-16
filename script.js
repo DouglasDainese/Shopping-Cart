@@ -10,8 +10,7 @@
 // const { fetchProducts } = require('./helpers/fetchProducts');
 
 // Fique a vontade para modificar o código já escrito e criar suas próprias funções!
-
-const cartElementPai = document.querySelector('.cart__items');
+const produtosNoCarrinho = document.querySelector('.cart__items');
 
 /**
  * Função responsável por criar e retornar o elemento de imagem do produto.
@@ -64,7 +63,7 @@ const createProductItemElement = ({ id, title, thumbnail }) => {
  * @param {Element} product - Elemento do produto.
  * @returns {string} ID do produto.
  */
- const getIdFromProductItem = (product) => product.querySelector('span.item_id').innerText;
+const getIdFromProductItem = (product) => product.querySelector('span.item_id').innerText;
 console.log(typeof getIdFromProductItem);
 /**
  * Função responsável por criar e retornar um item do carrinho.
@@ -82,10 +81,21 @@ const createCartItemElement = ({ id, title, price }) => {
   return li;
 };
 
-const produtosNoCarrinho = document.querySelector('.cart__items');
+const valorTotalProdutos = () => {
+  const totalDisplay = document.querySelector('.total-price');
+  const listaDeProdutos = document.getElementsByClassName('cart__item');
+  let valorTotal = 0;
+  for (let i = 0; i < listaDeProdutos.length; i += 1) {
+    const produto = listaDeProdutos[i].innerText;
+    const preçoProduto = parseFloat(produto.substr(produto.indexOf('$') + 1));
+    valorTotal += preçoProduto;
+  }
+  totalDisplay.lastElementChild.innerHTML = `$${valorTotal}`;
+};
 
-const atualizaWebStorag = () => {
+const atualizarWebStorage = () => {
   saveCartItems(produtosNoCarrinho.innerHTML);
+  valorTotalProdutos();
 };
 
 const removeItemInCart = (event) => {
@@ -96,19 +106,19 @@ const removeItemInCart = (event) => {
       element.parentElement.removeChild(productRemove);
     }
   });
-  atualizaWebStorag();
+  atualizarWebStorage();
 };
 const addEscutadorInCart = () => {
-const newProductInCart = document.querySelectorAll('.cart__item');
-newProductInCart.forEach((element) => element.addEventListener('click', removeItemInCart));
-atualizaWebStorag();
+  const newProductInCart = document.querySelectorAll('.cart__item');
+  newProductInCart.forEach((element) => element.addEventListener('click', removeItemInCart));
+  atualizarWebStorage();
 };
 
 const addItemInCart = async (event) => {
   const idProdutoEscolhido = event.target.parentNode.firstElementChild.innerText;
   const inforProduto = await fetchItem(idProdutoEscolhido);
   const produtoAdd = createCartItemElement(inforProduto);
-  cartElementPai.appendChild(produtoAdd);
+  produtosNoCarrinho.appendChild(produtoAdd);
   addEscutadorInCart();
 };
 
@@ -125,33 +135,34 @@ const addElementsInPag = async (valor) => {
   produtos.results
     .forEach((element) => {
       const produto = {
-       id: element.id, 
-       title: element.title, 
-       thumbnail: element.thumbnail,
+        id: element.id,
+        title: element.title,
+        thumbnail: element.thumbnail,
       };
       const section = createProductItemElement(produto);
       sectionParent.appendChild(section);
     });
-    addEscutadorDeEventos();
+  addEscutadorDeEventos();
 };
 
 const limparCart = document.querySelector('.empty-cart');
 limparCart.addEventListener('click', () => {
-while (produtosNoCarrinho.firstChild) {
-  produtosNoCarrinho.removeChild(produtosNoCarrinho.lastChild);
-}
-atualizaWebStorag();
+  while (produtosNoCarrinho.firstChild) {
+    produtosNoCarrinho.removeChild(produtosNoCarrinho.lastChild);
+  }
+  atualizarWebStorage();
 });
 
 const removeLoading = () => {
-const divLoading = document.querySelector('.loading');
-return divLoading.remove();
+  const divLoading = document.querySelector('.loading');
+  return divLoading.remove();
 };
 
 window.onload = async () => {
-await addElementsInPag('computador');
-removeLoading();
-const itensSalvos = getSavedCartItems();
-cartElementPai.innerHTML = itensSalvos;
-addEscutadorInCart();
+  await addElementsInPag('computador');
+  removeLoading();
+  const itensSalvos = getSavedCartItems();
+  produtosNoCarrinho.innerHTML = itensSalvos;
+  addEscutadorInCart();
+  valorTotalProdutos();
 };
