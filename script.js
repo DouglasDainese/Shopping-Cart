@@ -46,13 +46,14 @@ const createCustomElement = (element, className, innerText) => {
  * @param {string} product.thumbnail - URL da imagem do produto.
  * @returns {Element} Elemento de produto.
  */
-const createProductItemElement = ({ id, title, thumbnail }) => {
+const createProductItemElement = ({ id, title, thumbnail, preco }) => {
   const section = document.createElement('section');
   section.className = 'item';
 
   section.appendChild(createCustomElement('span', 'item_id', id));
-  section.appendChild(createCustomElement('span', 'item__title', title));
   section.appendChild(createProductImageElement(thumbnail));
+  section.appendChild(createCustomElement('span', 'item__title', title));
+  section.appendChild(createCustomElement('span', 'item_preco', `R$ ${preco}`));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
   return section;
@@ -73,11 +74,11 @@ console.log(typeof getIdFromProductItem);
  * @param {string} product.price - Preço do produto.
  * @returns {Element} Elemento de um item do carrinho.
  */
-const createCartItemElement = ({ id, title, price }) => {
+const createCartItemElement = ({ title, price }) => {
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `ID: ${id} | TITLE: ${title} | PRICE: $${price}`;
-  // li.addEventListener('click', console.log('clickou'));
+  li.innerText = `Produto: ${title} 
+  Valor: $${price}`;
   return li;
 };
 
@@ -90,7 +91,7 @@ const valorTotalProdutos = () => {
     const preçoProduto = parseFloat(produto.substr(produto.indexOf('$') + 1));
     valorTotal += preçoProduto;
   }
-  totalDisplay.lastElementChild.innerHTML = `$${valorTotal}`;
+  totalDisplay.lastElementChild.innerHTML = `R$${valorTotal}`;
 };
 
 const atualizarWebStorage = () => {
@@ -132,10 +133,12 @@ const addEscutadorDeEventos = () => {
 const addElementsInPag = async (valor) => {
   const sectionParent = document.getElementsByClassName('items')[0];
   const produtos = await fetchProducts(valor);
+  console.log(produtos);
   produtos.results
     .forEach((element) => {
       const produto = {
         id: element.id,
+        preco: element.price,
         title: element.title,
         thumbnail: element.thumbnail,
       };
